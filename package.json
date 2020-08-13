@@ -1,0 +1,15 @@
+{
+  "name": "demoduosusa",
+  "version": "1.0.0",
+  "description": "programa para prueba de emmisary dunosusa",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Sebastian Ortega (Moviltrack)",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
