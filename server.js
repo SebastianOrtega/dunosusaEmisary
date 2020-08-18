@@ -15,7 +15,13 @@ app.post("/", function (req, res) {
   console.log("************************************************");
   res.sendStatus(200);
 });
+let n = 0;
+setInterval(contador, 1000);
 
 app.listen(PORT, function () {
   console.log("Esperando POST: " + PORT);
 });
+
+function contador() {
+  console.log(n++);
+}
