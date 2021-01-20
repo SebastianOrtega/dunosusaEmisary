@@ -12,15 +12,15 @@ app.use(bodyParser.text({ type: "text/*" }));
 
 app.post("*", function (req, res) {
   console.log("************************************************");
-  //console.log(req.body);
-  let nuevo = req.body.replace(/[\n\r]+/g, "");
+  console.log(req.body);
+  /* let nuevo = req.body.replace(/[\n\r]+/g, "");
   let array = nuevo.split(";");
   //console.log("ultimo", array[array.length]);
   array[array.length - 1] = array[array.length - 1].replace("#IOs", "");
   array[array.length - 1] = '{"IOS":"' + array[array.length - 1] + '"}';
   //console.log(array);
 
-  array.map((dato) => console.log(JSON.parse(dato)));
+  array.map((dato) => console.log(JSON.parse(dato))); */
   console.log("------------------------------------------------");
   // console.log("************************************************");
   res.sendStatus(200);
