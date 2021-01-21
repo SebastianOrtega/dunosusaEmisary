@@ -4,11 +4,11 @@ var bodyParser = require("body-parser");
 var app = express();
 var PORT = process.env.PORT || 8080;
 
-//app.use(express.urlencoded({ extended: true }));
-//app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+//app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(bodyParser.text({ type: "text/*" }));
+//app.use(bodyParser.text({ type: "text/*" }));
 
 app.post("*", function (req, res) {
   console.log("************************************************");
