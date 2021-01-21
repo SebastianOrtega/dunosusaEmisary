@@ -12,6 +12,7 @@ app.use(express.json());
 
 app.post("*", function (req, res) {
   console.log("************************************************");
+  console.log(Math.floor(Math.random() * 1000));
   console.log(req.body);
   /* let nuevo = req.body.replace(/[\n\r]+/g, "");
   let array = nuevo.split(";");
