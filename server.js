@@ -12,39 +12,63 @@ app.use(express.json());
 //app.use(bodyParser.text({ type: "text/*" }));
 
 app.post("*", function (req, res) {
+  const Antena = [[], [], [], []];
+  const JSONsAEnviar = [];
+
   console.log("************************************************");
   console.log(Math.floor(Math.random() * 1000));
   const body = req.body;
-  console.log(body);
-  //console.log(Equipos[body.Equipo[]]);
+  //console.log(body);
 
-  /* let nuevo = req.body.replace(/[\n\r]+/g, "");
-  let array = nuevo.split(";");
-  //console.log("ultimo", array[array.length]);
-  array[array.length - 1] = array[array.length - 1].replace("#IOs", "");
-  array[array.length - 1] = '{"IOS":"' + array[array.length - 1] + '"}';
-  //console.log(array);
-
-  array.map((dato) => console.log(JSON.parse(dato))); */
   console.log("···············································");
 
-  let dato_a_enviar = {
-    location: "Equipos.req.body.Equipo",
-    date: 1611687247620,
-    tagcount: "1",
-    tags: [
-      {
-        rssi: "-43.5",
-        logicaldevice: "Anden7",
-        count: "27",
-        epc: "313030303030303030303031",
-        fields: {
-          TipoTag: "Contenedor",
-        },
-      },
-    ],
-  };
-  console.log("Resultado: ", dato_a_enviar);
+  //console.log(req.body.datos);
+
+  for (let index = 0; index < req.body.datos.length; index++) {
+    const element = req.body.datos[index];
+
+    //console.log(Equipos[element[4]][element[5]]); //element[ 4 ]  es el nombre del equipo, element[ 5 ] es el numero de la antena
+    let Anden = Equipos[element[4]][element[5]];
+    if (element[5] == 0) {
+      Antena[0].push(element);
+    } else if (element[5] == 1) {
+      Antena[1].push(element);
+    } else if (element[5] == 2) {
+      Antena[2].push(element);
+    } else if (element[5] == 3) {
+      Antena[3].push(element);
+    }
+  }
+  console.log("Antena: ", Antena);
+  for (let index = 0; index < Antena.length; index++) {
+    const element = Antena[index];
+    if (element.length !== 0)
+      console.log("Elemento" + index + ": " + element.length);
+    element.map((tag) => {
+      console.log(tag);
+      //console.log("TAG: ", tag[4], tag[5]);
+      //console.log("Date: ", tag[1]);
+      Anden = Equipos[String(tag[4])][String(tag[5])];
+      const JSONxAntena = {
+        location: Anden,
+        date: 0,
+        tagcount: String(element.length),
+        tags: [
+          {
+            rssi: "-43.5",
+            logicaldevice: "Anden7",
+            count: "27",
+            epc: "313030303030303030303031",
+            fields: {
+              TipoTag: "Contenedor",
+            },
+          },
+        ],
+      };
+      //console.log(JSONxAntena);
+    });
+  }
+
   console.log("------------------------------------------------");
   // console.log("************************************************");
   res.sendStatus(200);
