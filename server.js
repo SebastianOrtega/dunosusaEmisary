@@ -6,14 +6,22 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 const Equipos = require("./equipos.js");
 
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({
+  extended: true
+}));
 app.use(express.json());
 //app.use(bodyParser.urlencoded({ extended: false }));
 //console.log("Equipos : ", Equipos.Equipo3[0]);
 //app.use(bodyParser.text({ type: "text/*" }));
 
 app.post("*", function (req, res) {
-  const Antena = [[], [], [], []];
+  res.sendStatus(200);
+  const Antena = [
+    [],
+    [],
+    [],
+    []
+  ];
   const JSONsAEnviar = {};
   const arregloJSONs = [];
 
@@ -41,50 +49,60 @@ app.post("*", function (req, res) {
       Antena[3].push(element);
     }
   }
- // console.log("Antena: ", Antena.length);
+  // console.log("Antena: ", Antena.length);
   for (let index = 0; index < Antena.length; index++) {
     const element = Antena[index];
-const arregloTags = [];
-    if (element.length !== 0){
-     // console.log("Elemento " + index + ": " + element.length);
-    let date;
-    element.map((tag) => {
-      Anden = Equipos[String(tag[4])][String(tag[5])];
-      //console.log(tag);
-      date=tag[1];
-      const objeto = {};
-      let TipoTag = "";
+    const arregloTags = [];
+    if (element.length !== 0) {
+      //console.log("Elemento " + index + ": " + element.length);
+      let date;
+      element.map((tag) => {
+        Anden = Equipos[String(tag[4])][String(tag[5])];
+        //console.log(tag);
+        date = tag[1];
+        const objeto = {};
+        let TipoTag = "";
 
-      String(tag[0]).startsWith("3130")
-        ? (TipoTag = "Contenedor")
-        : (TipoTag = "Camion");
+        String(tag[0]).startsWith("3130") ?
+          (TipoTag = "Contenedor") :
+          (TipoTag = "Camion");
 
-      _.assign(objeto, {
-        rssi: tag[3],
-        logicaldevice: Anden,
-        count: tag[2],
-        epc: tag[0],
-        fields: { TipoTag },
+        _.assign(objeto, {
+          rssi: tag[3],
+          logicaldevice: Anden,
+          count: tag[2],
+          epc: tag[0],
+          fields: {
+            TipoTag
+          },
+        });
+
+        arregloTags.push(objeto);
+        console.log("objeto", objeto);
+        //console.log("TAG: ", tag[4], tag[5]);
+        //console.log("Date: ", tag[1]);
+
+        console.log(JSONxAntena);
       });
+      _.assign(JSONsAEnviar, {
+        "location": Anden,
+        date,
+        "tagcount": element.length,
+        "tags": arregloTags
+      })
+      arregloJSONs.push(JSONsAEnviar);
+      // console.log("ArregloJSONs",JSON.stringify(arregloJSONs));
 
-      arregloTags.push(objeto);
+    }
 
-      //console.log("TAG: ", tag[4], tag[5]);
-      //console.log("Date: ", tag[1]);
-
-      //console.log(JSONxAntena);
-    });
-    _.assign(JSONsAEnviar,{"location":Anden,date,"tagcount":element.length,"tags":arregloTags})
-   arregloJSONs.push(JSONsAEnviar);
-   // console.log("ArregloJSONs",JSON.stringify(arregloJSONs));
-   
   }
-  console.log("ArregloJSONs",arregloJSONs);
-}
+  console.log("tamano arreoglo: ", arregloJSONs.length);
+  //arregloJSONs.map(objeto => console.log(objeto));
+  //console.log("ArregloJSONs",arregloJSONs);
 
   console.log("------------------------------------------------");
   // console.log("************************************************");
-  res.sendStatus(200);
+  //res.sendStatus(200);
 });
 let n = 0;
 //setInterval(contador, 1000);
