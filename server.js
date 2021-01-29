@@ -1,5 +1,6 @@
 var express = require("express");
 var bodyParser = require("body-parser");
+var _ = require("loadsh");
 //require("body-parser-xml")(bodyParser);
 var app = express();
 var PORT = process.env.PORT || 8080;
@@ -20,7 +21,7 @@ app.post("*", function (req, res) {
   const body = req.body;
   //console.log(body);
 
-  console.log("···············································");
+  //console.log("···············································");
 
   //console.log(req.body.datos);
 
@@ -39,13 +40,13 @@ app.post("*", function (req, res) {
       Antena[3].push(element);
     }
   }
-  console.log("Antena: ", Antena);
+  //console.log("Antena: ", Antena);
   for (let index = 0; index < Antena.length; index++) {
     const element = Antena[index];
     if (element.length !== 0)
-      console.log("Elemento" + index + ": " + element.length);
+      console.log("Elemento" + index + ": " + element.length,element);
     element.map((tag) => {
-      console.log(tag);
+      //console.log(tag);
       //console.log("TAG: ", tag[4], tag[5]);
       //console.log("Date: ", tag[1]);
       Anden = Equipos[String(tag[4])][String(tag[5])];
