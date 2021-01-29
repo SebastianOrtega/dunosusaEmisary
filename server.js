@@ -14,7 +14,8 @@ app.use(express.json());
 
 app.post("*", function (req, res) {
   const Antena = [[], [], [], []];
-  const JSONsAEnviar = [];
+  const JSONsAEnviar = {};
+  const arregloJSONs = [];
 
   console.log("************************************************");
   console.log(Math.floor(Math.random() * 1000));
@@ -40,16 +41,17 @@ app.post("*", function (req, res) {
       Antena[3].push(element);
     }
   }
-  console.log("Antena: ", Antena.length);
+ // console.log("Antena: ", Antena.length);
   for (let index = 0; index < Antena.length; index++) {
     const element = Antena[index];
-
-    if (element.length !== 0)
-      console.log("Elemento " + index + ": " + element.length);
-    const arregloTags = [];
+const arregloTags = [];
+    if (element.length !== 0){
+     // console.log("Elemento " + index + ": " + element.length);
+    let date;
     element.map((tag) => {
       Anden = Equipos[String(tag[4])][String(tag[5])];
       //console.log(tag);
+      date=tag[1];
       const objeto = {};
       let TipoTag = "";
 
@@ -72,8 +74,13 @@ app.post("*", function (req, res) {
 
       //console.log(JSONxAntena);
     });
-    console.log("ArregloTags", arregloTags);
+    _.assign(JSONsAEnviar,{"location":Anden,date,"tagcount":element.length,"tags":arregloTags})
+   arregloJSONs.push(JSONsAEnviar);
+   // console.log("ArregloJSONs",JSON.stringify(arregloJSONs));
+   
   }
+  console.log("ArregloJSONs",arregloJSONs);
+}
 
   console.log("------------------------------------------------");
   // console.log("************************************************");
