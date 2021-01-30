@@ -6,9 +6,11 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 const Equipos = require("./equipos.js");
 
-app.use(express.urlencoded({
-  extended: true
-}));
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
 app.use(express.json());
 //app.use(bodyParser.urlencoded({ extended: false }));
 //console.log("Equipos : ", Equipos.Equipo3[0]);
@@ -16,24 +18,15 @@ app.use(express.json());
 
 app.post("*", function (req, res) {
   res.sendStatus(200);
-  const Antena = [
-    [],
-    [],
-    [],
-    []
-  ];
-  const JSONsAEnviar = {};
-  const arregloJSONs = [];
+  const Antena = [[], [], [], []];
+  const _JSONsAEnviar = {};
+  let arregloJSONs = [];
+  let n = 1;
 
   console.log("************************************************");
   console.log(Math.floor(Math.random() * 1000));
   const body = req.body;
-  //console.log(body);
-
-  //console.log("···············································");
-
-  //console.log(req.body.datos);
-
+  arregloJSONs = [];
   for (let index = 0; index < req.body.datos.length; index++) {
     const element = req.body.datos[index];
 
@@ -49,9 +42,13 @@ app.post("*", function (req, res) {
       Antena[3].push(element);
     }
   }
+  //console.log("ArregloAntenas", Antena);
   // console.log("Antena: ", Antena.length);
+
   for (let index = 0; index < Antena.length; index++) {
+    //console.log("Trabajando Antena: " + index);
     const element = Antena[index];
+
     const arregloTags = [];
     if (element.length !== 0) {
       //console.log("Elemento " + index + ": " + element.length);
@@ -63,46 +60,35 @@ app.post("*", function (req, res) {
         const objeto = {};
         let TipoTag = "";
 
-        String(tag[0]).startsWith("3130") ?
-          (TipoTag = "Contenedor") :
-          (TipoTag = "Camion");
+        String(tag[0]).startsWith("3130")
+          ? (TipoTag = "Contenedor")
+          : (TipoTag = "Camion");
 
         _.assign(objeto, {
           rssi: tag[3],
           logicaldevice: Anden,
           count: tag[2],
           epc: tag[0],
-          fields: {
-            TipoTag
-          },
+          fields: { TipoTag },
         });
 
         arregloTags.push(objeto);
-        console.log("objeto", objeto);
-        //console.log("TAG: ", tag[4], tag[5]);
-        //console.log("Date: ", tag[1]);
-
-        console.log(JSONxAntena);
       });
-      _.assign(JSONsAEnviar, {
-        "location": Anden,
+
+      _.assign(_JSONsAEnviar, {
+        location: Anden,
         date,
-        "tagcount": element.length,
-        "tags": arregloTags
-      })
-      arregloJSONs.push(JSONsAEnviar);
-      // console.log("ArregloJSONs",JSON.stringify(arregloJSONs));
-
+        tagcount: element.length,
+        tags: arregloTags,
+      });
+      arregloJSONs.push(_JSONsAEnviar);
+      console.log("_JSONsAEnviar", _JSONsAEnviar);
     }
-
+    //console.log("tamaño Arreglo JSON:", arregloJSONs.length);
   }
-  console.log("tamano arreoglo: ", arregloJSONs.length);
-  //arregloJSONs.map(objeto => console.log(objeto));
-  //console.log("ArregloJSONs",arregloJSONs);
-
+  //console.log("ArregloObjetosJSON: ", arregloJSONs);
+  // arregloJSONs.map( ( dato ) => console.log( dato ) );
   console.log("------------------------------------------------");
-  // console.log("************************************************");
-  //res.sendStatus(200);
 });
 let n = 0;
 //setInterval(contador, 1000);
@@ -114,20 +100,3 @@ app.listen(PORT, function () {
 function contador() {
   console.log(n++);
 }
-
-/* const JSONxAntena = {
-  location: Anden,
-  date: 0,
-  tagcount: String(element.length),
-  tags: [
-    {
-      rssi: "-43.5",
-      logicaldevice: "Anden7",
-      count: "27",
-      epc: "313030303030303030303031",
-      fields: {
-        TipoTag: "Contenedor",
-      },
-    },
-  ],
-}; */
