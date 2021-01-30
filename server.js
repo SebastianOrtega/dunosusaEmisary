@@ -21,12 +21,11 @@ app.post("*", function (req, res) {
   const Antena = [[], [], [], []];
   const _JSONsAEnviar = {};
   let arregloJSONs = [];
-  let n = 1;
 
   console.log("************************************************");
   console.log(Math.floor(Math.random() * 1000));
   const body = req.body;
-  arregloJSONs = [];
+
   for (let index = 0; index < req.body.datos.length; index++) {
     const element = req.body.datos[index];
 
@@ -57,7 +56,7 @@ app.post("*", function (req, res) {
         Anden = Equipos[String(tag[4])][String(tag[5])];
         //console.log(tag);
         date = tag[1];
-        const objeto = {};
+        let objeto = {};
         let TipoTag = "";
 
         String(tag[0]).startsWith("3130")
@@ -81,13 +80,12 @@ app.post("*", function (req, res) {
         tagcount: element.length,
         tags: arregloTags,
       });
-      arregloJSONs.push(_JSONsAEnviar);
-      console.log("_JSONsAEnviar", _JSONsAEnviar);
+      arregloJSONs.push({ ..._JSONsAEnviar });
     }
-    //console.log("tamaño Arreglo JSON:", arregloJSONs.length);
   }
-  //console.log("ArregloObjetosJSON: ", arregloJSONs);
-  // arregloJSONs.map( ( dato ) => console.log( dato ) );
+
+  console.log("================================================");
+  arregloJSONs.map((dato) => console.log(dato));
   console.log("------------------------------------------------");
 });
 let n = 0;
