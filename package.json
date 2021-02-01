@@ -10,6 +10,7 @@
   "author": "Sebastian Ortega (Moviltrack)",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.21.1",
     "body-parser-xml": "^2.0.1",
     "express": "^4.17.1",
     "loadsh": "0.0.4"
