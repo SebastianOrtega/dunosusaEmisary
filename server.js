@@ -2,11 +2,23 @@
 const express = require("express");
 const _ = require("loadsh");
 const axios = require('axios');
+const winston = require("winston");
 const app = express();
 const PORT = process.env.PORT || 8080;
 const Equipos = require("./equipos.js");
 const URL = "http://localhost:8000";
 
+process.on('uncaughtException', ex => {
+  console.log('ERROR');
+  winston.error(ex.message, ex);
+});
+
+winston.add(new winston.transports.File({
+  filename: 'error.log',
+  handleExceptions: true
+}));
+//winston.error("Eroror");
+//throw new Error('Algo fallo');
 app.use(
   express.urlencoded({
     extended: true,
@@ -30,7 +42,7 @@ app.post("*", function (req, res) {
   let entrada;
 
   console.log("************************************************");
-  console.log(Math.floor(Math.random() * 1000));
+  // console.log(Math.floor(Math.random() * 1000));
   const body = req.body;
   entrada = req.body.Entrada;
   console.log("Entrada: ", entrada);
@@ -96,6 +108,7 @@ app.post("*", function (req, res) {
   arregloJSONs.map((dato) =>
 
     {
+      //winston.info(dato);
       console.log(dato);
       axios
         .post(URL, dato)
