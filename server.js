@@ -1,42 +1,42 @@
 //const bodyParser = require("body-parser");
 const express = require("express");
 const _ = require("loadsh");
-const axios = require('axios');
-const winston = require("winston");
+const axios = require("axios");
+const { transports, createLogger, format } = require("winston");
 const app = express();
 const PORT = process.env.PORT || 8080;
 const Equipos = require("./equipos.js");
 const URL = "http://localhost:8000";
 
-process.on('uncaughtException', ex => {
-  console.log('ERROR');
-  winston.error(ex.message, ex);
+process.on("uncaughtException", (ex) => {
+  console.log("ERROR");
+  logger.error(ex.message, ex);
 });
 
-winston.add(new winston.transports.File({
-  filename: 'error.log',
-  handleExceptions: true
-}));
-//winston.error("Eroror");
+const logger = createLogger({
+  format: format.combine(format.timestamp(), format.json()),
+  transports: [
+    new transports.Console(),
+    new transports.File({ filename: "logs/error.log", level: "error" }),
+    new transports.File({
+      filename: "logs/activity.log",
+      level: "info",
+    }),
+  ],
+});
+
 //throw new Error('Algo fallo');
+
 app.use(
   express.urlencoded({
     extended: true,
   })
 );
 app.use(express.json());
-//app.use(bodyParser.urlencoded({ extended: false }));
-//console.log("Equipos : ", Equipos.Equipo3[0]);
-//app.use(bodyParser.text({ type: "text/*" }));
 
 app.post("*", function (req, res) {
   res.sendStatus(200);
-  const Antena = [
-    [],
-    [],
-    [],
-    []
-  ];
+  const Antena = [[], [], [], []];
   const _JSONsAEnviar = {};
   let arregloJSONs = [];
   let entrada;
@@ -75,9 +75,9 @@ app.post("*", function (req, res) {
         let objeto = {};
         let TipoTag = "";
 
-        String(tag[0]).startsWith("3130") ?
-          (TipoTag = "Contenedor") :
-          (TipoTag = "Camion");
+        String(tag[0]).startsWith("3130")
+          ? (TipoTag = "Contenedor")
+          : (TipoTag = "Camion");
 
         _.assign(objeto, {
           rssi: tag[3],
@@ -85,7 +85,7 @@ app.post("*", function (req, res) {
           count: tag[2],
           epc: tag[0],
           fields: {
-            TipoTag
+            TipoTag,
           },
         });
 
@@ -99,28 +99,26 @@ app.post("*", function (req, res) {
         tags: arregloTags,
       });
       arregloJSONs.push({
-        ..._JSONsAEnviar
+        ..._JSONsAEnviar,
       });
     }
   }
 
   console.log("================================================");
-  arregloJSONs.map((dato) =>
-
-    {
-      //winston.info(dato);
-      console.log(dato);
-      axios
-        .post(URL, dato)
-        .then(res => {
-          // console.log(`statusCode: ${res.statusCode}`)
-          console.log("Resultado: ", res.status);
-        })
-        .catch(error => {
-          console.log("Error en envio:", error.code);
-        });
-    }
-  );
+  arregloJSONs.map((dato) => {
+    //winston.info(dato);
+    console.log(dato);
+    axios
+      .post(URL, dato)
+      .then((res) => {
+        // console.log(`statusCode: ${res.statusCode}`)
+        console.log("Resultado: ", res.status);
+      })
+      .catch((error) => {
+        logger.error("Error de Envio: " + String(error));
+        console.log("Error en envio:", error.code);
+      });
+  });
   console.log("------------------------------------------------");
 });
 
