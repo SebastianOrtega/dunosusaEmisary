@@ -44,7 +44,7 @@ app.post("*", function (req, res) {
   console.log("************************************************");
   // console.log(Math.floor(Math.random() * 1000));
   const body = req.body;
-  cconsole.log(body);
+  console.log(body);
   entrada = req.body.Entrada;
   //console.log("Entrada: ", entrada);
 
