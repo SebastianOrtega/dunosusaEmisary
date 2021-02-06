@@ -44,8 +44,9 @@ app.post("*", function (req, res) {
   console.log("************************************************");
   // console.log(Math.floor(Math.random() * 1000));
   const body = req.body;
+  cconsole.log(body);
   entrada = req.body.Entrada;
-  console.log("Entrada: ", entrada);
+  //console.log("Entrada: ", entrada);
 
   for (let index = 0; index < req.body.datos.length; index++) {
     const element = req.body.datos[index];
@@ -107,7 +108,7 @@ app.post("*", function (req, res) {
   console.log("================================================");
   arregloJSONs.map((dato) => {
     //winston.info(dato);
-    console.log(dato);
+    //console.log(dato);
     axios
       .post(URL, dato)
       .then((res) => {

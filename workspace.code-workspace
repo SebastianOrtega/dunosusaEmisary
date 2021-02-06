@@ -4,5 +4,10 @@
       "path": "../alien_rfid_lib/examples"
     }
   ],
-  "settings": {}
+  "settings": {
+    "terminal.explorerKind": "external",
+    "terminal.integrated.automationShell.linux": "",
+    "editor.fontFamily": "Fira Mono for Powerline",
+    "terminal.integrated.fontFamily": "Fira Mono for Powerline"
+  }
 }
