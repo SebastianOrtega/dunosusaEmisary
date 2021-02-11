@@ -108,14 +108,15 @@ app.post("*", function (req, res) {
   }
 
   console.log("================================================");
+  let w = 0;
   arregloJSONs.map((dato) => {
     //winston.info(dato);
-    console.log(dato);
+    console.log("dato #" + w++, dato);
     axios
       .post(URL, dato)
       .then((res) => {
         // console.log(`statusCode: ${res.statusCode}`)
-        console.log("Tipo: ", dato);
+        //console.log("Tipo: ", dato);
         console.log("Resultado: ", res.status);
         console.log("------------------------------------------------");
       })
