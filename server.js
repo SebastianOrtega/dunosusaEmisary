@@ -7,6 +7,8 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 const Equipos = require("./equipos.js");
 const URL = "http://localhost:8000";
+const URLCamiones = "http://localhost:8000";
+const URLContenedores = "http://localhost:8000";
 
 process.on("uncaughtException", (ex) => {
   console.log("ERROR");
@@ -44,7 +46,7 @@ app.post("*", function (req, res) {
   console.log("************************************************");
   // console.log(Math.floor(Math.random() * 1000));
   const body = req.body;
-  console.log(body);
+  //console.log(body);
   entrada = req.body.Entrada;
   //console.log("Entrada: ", entrada);
 
@@ -108,19 +110,21 @@ app.post("*", function (req, res) {
   console.log("================================================");
   arregloJSONs.map((dato) => {
     //winston.info(dato);
-    //console.log(dato);
+    console.log(dato);
     axios
       .post(URL, dato)
       .then((res) => {
         // console.log(`statusCode: ${res.statusCode}`)
+        console.log("Tipo: ", dato);
         console.log("Resultado: ", res.status);
+        console.log("------------------------------------------------");
       })
       .catch((error) => {
         logger.error("Error de Envio: " + String(error));
         console.log("Error en envio:", error.code);
+        console.log("------------------------------------------------");
       });
   });
-  console.log("------------------------------------------------");
 });
 
 app.listen(PORT, function () {
