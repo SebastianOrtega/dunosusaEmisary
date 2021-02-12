@@ -138,16 +138,17 @@ app.post("*", function (req, res) {
     //console.log("isEmptyContenedores: ", isEmpty(dato));
     //console.log(dato);
     if (!isEmpty(dato)) {
-      console.log("Post en Contenedores ", URLContenedores);
       axios
         .post(URLContenedores, dato)
         .then((res) => {
+          console.log("Post en Contenedores ", URLContenedores);
           console.log("Resultado: ", res.status);
           console.log("------------------------------------------------");
           console.log(JSON.stringify(dato));
           console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
         })
         .catch((error) => {
+          console.log("Post en Contenedores ", URLContenedores);
           logger.error("Error de Envio: " + String(error));
           console.log("Error en envio:", error.code);
           console.log("------------------------------------------------");
@@ -159,16 +160,17 @@ app.post("*", function (req, res) {
     // console.log("isEmptyCamiones: ", isEmpty(dato));
     // console.log(dato);
     if (!isEmpty(dato)) {
-      console.log("Post en Camiones ", URLCamiones);
       axios
         .post(URLCamiones, dato)
         .then((res) => {
+          console.log("Post en Camiones ", URLCamiones);
           console.log("Resultado: ", res.status);
           console.log("------------------------------------------------");
           console.log(JSON.stringify(dato));
           console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
         })
         .catch((error) => {
+          console.log("Post en Camiones ", URLCamiones);
           logger.error("Error de Envio: " + String(error));
           console.log("Error en envio:", error.code);
           console.log("------------------------------------------------");
