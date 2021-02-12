@@ -2,16 +2,11 @@
 const express = require("express");
 const _ = require("loadsh");
 const axios = require("axios");
-const {
-  transports,
-  createLogger,
-  format
-} = require("winston");
+const { transports, createLogger, format } = require("winston");
 const app = express();
 const PORT = process.env.PORT || 8080;
 const Equipos = require("./equipos.js");
-const URL = "http://localhost:8000";
-const URLCamiones = "http://localhost:8000";
+const URLCamiones = "http://localhost:8001";
 const URLContenedores = "http://localhost:8000";
 
 process.on("uncaughtException", (ex) => {
@@ -25,7 +20,7 @@ const logger = createLogger({
     new transports.Console(),
     new transports.File({
       filename: "logs/error.log",
-      level: "error"
+      level: "error",
     }),
     new transports.File({
       filename: "logs/activity.log",
@@ -45,15 +40,10 @@ app.use(express.json());
 
 app.post("*", function (req, res) {
   res.sendStatus(200);
-  const Antena = [
-    [],
-    [],
-    [],
-    []
-  ];
-  const _JSONsAEnviar = {};
+  const Antena = [[], [], [], []];
+  const _JSONsAEnviarContenedores = {};
   const _JSONsAEnviarCamiones = {};
-  let arregloJSONs = [];
+  let arregloJSONsContenedores = [];
   let arregloJSONsCamiones = [];
   let entrada;
 
@@ -83,7 +73,7 @@ app.post("*", function (req, res) {
   for (let index = 0; index < Antena.length; index++) {
     const element = Antena[index];
 
-    const arregloTags = [];
+    const arregloTagsContenedores = [];
     const arregloTagsCamiones = [];
     if (element.length !== 0) {
       let date;
@@ -93,9 +83,9 @@ app.post("*", function (req, res) {
         let objeto = {};
         let TipoTag = "";
 
-        String(tag[0]).startsWith("3130") ?
-          (TipoTag = "Contenedor") :
-          (TipoTag = "Camion");
+        String(tag[0]).startsWith("3130")
+          ? (TipoTag = "Camion")
+          : (TipoTag = "Contenedor");
 
         _.assign(objeto, {
           rssi: tag[3],
@@ -106,73 +96,88 @@ app.post("*", function (req, res) {
             TipoTag,
           },
         });
-        if (TipoTag === "Camiones") {
+        if (TipoTag === "Camion") {
+          console.log("es Camion");
           arregloTagsCamiones.push(objeto);
         } else {
-          arregloTags.push(objeto);
+          console.log("es Contenedor");
+          arregloTagsContenedores.push(objeto);
         }
-
       });
-
-
-      _.assign(_JSONsAEnviar, {
-        location: Anden,
-        date,
-        tagcount: element.length,
-        tags: arregloTags,
-      });
-      _.assign(_JSONsAEnviarCamiones, {
-        location: Anden,
-        date,
-        tagcount: element.length,
-        tags: arregloTagsCamiones,
-      });
-      arregloJSONs.push({
-        ..._JSONsAEnviar,
+      if (arregloTagsContenedores.length > 0) {
+        _.assign(_JSONsAEnviarContenedores, {
+          location: Anden,
+          date,
+          tagcount: element.length,
+          tags: arregloTagsContenedores,
+        });
+      }
+      if (arregloTagsCamiones.length > 0) {
+        _.assign(_JSONsAEnviarCamiones, {
+          location: Anden,
+          date,
+          tagcount: element.length,
+          tags: arregloTagsCamiones,
+        });
+      }
+      arregloJSONsContenedores.push({
+        ..._JSONsAEnviarContenedores,
       });
       arregloJSONsCamiones.push({
         ..._JSONsAEnviarCamiones,
       });
     }
   }
-
+  //console.log("Camiones", arregloJSONsCamiones);
+  //console.log("Contenedores", arregloJSONsContenedores);
   console.log("================================================");
-  arregloJSONs.map((dato) => {
-    //winston.info(dato);
-    //console.log("dato #" , dato);
-    axios
-      .post(URL, dato)
-      .then((res) => {
-        // console.log(`statusCode: ${res.statusCode}`)
-        //console.log("Tipo: ", dato);
-        console.log("Resultado: ", res.status);
-        console.log("------------------------------------------------");
-      })
-      .catch((error) => {
-        logger.error("Error de Envio: " + String(error));
-        console.log("Error en envio:", error.code);
-        console.log("------------------------------------------------");
-      });
+
+  arregloJSONsContenedores.map((dato) => {
+    console.log("isEmptyContenedores: ", isEmpty(dato));
+    console.log(dato);
+    if (!isEmpty(dato)) {
+      console.log("Post en Contenedores ", URLContenedores);
+      axios
+        .post(URLContenedores, dato)
+        .then((res) => {
+          console.log("Resultado: ", res.status);
+          console.log("------------------------------------------------");
+        })
+        .catch((error) => {
+          logger.error("Error de Envio: " + String(error));
+          console.log("Error en envio:", error.code);
+          console.log("------------------------------------------------");
+        });
+    }
   });
+
   arregloJSONsCamiones.map((dato) => {
-    //winston.info(dato);
-    //console.log("dato #" , dato);
-    axios
-      .post(URL, dato)
-      .then((res) => {
-        // console.log(`statusCode: ${res.statusCode}`)
-        //console.log("Tipo: ", dato);
-        console.log("Resultado: ", res.status);
-        console.log("------------------------------------------------");
-      })
-      .catch((error) => {
-        logger.error("Error de Envio: " + String(error));
-        console.log("Error en envio:", error.code);
-        console.log("------------------------------------------------");
-      });
+    console.log("isEmptyCamiones: ", isEmpty(dato));
+    console.log(dato);
+    if (!isEmpty(dato)) {
+      console.log("Post en Camiones ", URLCamiones);
+      axios
+        .post(URLCamiones, dato)
+        .then((res) => {
+          console.log("Resultado: ", res.status);
+          console.log("------------------------------------------------");
+        })
+        .catch((error) => {
+          logger.error("Error de Envio: " + String(error));
+          console.log("Error en envio:", error.code);
+          console.log("------------------------------------------------");
+        });
+    }
   });
 });
 
 app.listen(PORT, function () {
   console.log("Esperando POST: " + PORT);
 });
+
+function isEmpty(obj) {
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key)) return false;
+  }
+  return true;
+}
