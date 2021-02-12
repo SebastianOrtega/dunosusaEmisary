@@ -2,7 +2,11 @@
 const express = require("express");
 const _ = require("loadsh");
 const axios = require("axios");
-const { transports, createLogger, format } = require("winston");
+const {
+  transports,
+  createLogger,
+  format
+} = require("winston");
 const app = express();
 const PORT = process.env.PORT || 8080;
 const Equipos = require("./equipos.js");
@@ -19,7 +23,10 @@ const logger = createLogger({
   format: format.combine(format.timestamp(), format.json()),
   transports: [
     new transports.Console(),
-    new transports.File({ filename: "logs/error.log", level: "error" }),
+    new transports.File({
+      filename: "logs/error.log",
+      level: "error"
+    }),
     new transports.File({
       filename: "logs/activity.log",
       level: "info",
@@ -38,9 +45,16 @@ app.use(express.json());
 
 app.post("*", function (req, res) {
   res.sendStatus(200);
-  const Antena = [[], [], [], []];
+  const Antena = [
+    [],
+    [],
+    [],
+    []
+  ];
   const _JSONsAEnviar = {};
+  const _JSONsAEnviarCamiones = {};
   let arregloJSONs = [];
+  let arregloJSONsCamiones = [];
   let entrada;
 
   console.log("************************************************");
@@ -70,6 +84,7 @@ app.post("*", function (req, res) {
     const element = Antena[index];
 
     const arregloTags = [];
+    const arregloTagsCamiones = [];
     if (element.length !== 0) {
       let date;
       element.map((tag) => {
@@ -78,9 +93,9 @@ app.post("*", function (req, res) {
         let objeto = {};
         let TipoTag = "";
 
-        String(tag[0]).startsWith("3130")
-          ? (TipoTag = "Contenedor")
-          : (TipoTag = "Camion");
+        String(tag[0]).startsWith("3130") ?
+          (TipoTag = "Contenedor") :
+          (TipoTag = "Camion");
 
         _.assign(objeto, {
           rssi: tag[3],
@@ -91,9 +106,14 @@ app.post("*", function (req, res) {
             TipoTag,
           },
         });
+        if (TipoTag === "Camiones") {
+          arregloTagsCamiones.push(objeto);
+        } else {
+          arregloTags.push(objeto);
+        }
 
-        arregloTags.push(objeto);
       });
+
 
       _.assign(_JSONsAEnviar, {
         location: Anden,
@@ -101,17 +121,42 @@ app.post("*", function (req, res) {
         tagcount: element.length,
         tags: arregloTags,
       });
+      _.assign(_JSONsAEnviarCamiones, {
+        location: Anden,
+        date,
+        tagcount: element.length,
+        tags: arregloTagsCamiones,
+      });
       arregloJSONs.push({
         ..._JSONsAEnviar,
+      });
+      arregloJSONsCamiones.push({
+        ..._JSONsAEnviarCamiones,
       });
     }
   }
 
   console.log("================================================");
-  let w = 0;
   arregloJSONs.map((dato) => {
     //winston.info(dato);
-    console.log("dato #" + w++, dato);
+    //console.log("dato #" , dato);
+    axios
+      .post(URL, dato)
+      .then((res) => {
+        // console.log(`statusCode: ${res.statusCode}`)
+        //console.log("Tipo: ", dato);
+        console.log("Resultado: ", res.status);
+        console.log("------------------------------------------------");
+      })
+      .catch((error) => {
+        logger.error("Error de Envio: " + String(error));
+        console.log("Error en envio:", error.code);
+        console.log("------------------------------------------------");
+      });
+  });
+  arregloJSONsCamiones.map((dato) => {
+    //winston.info(dato);
+    //console.log("dato #" , dato);
     axios
       .post(URL, dato)
       .then((res) => {
