@@ -4,12 +4,12 @@ const _ = require("loadsh");
 const axios = require("axios");
 const { transports, createLogger, format } = require("winston");
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8000;
 const Equipos = require("./equipos.js");
 const URLCamiones =
-  "http://localhost:8000/WSAntenasCedis/API/CEDIS/registrar_camion/";
+  "http://localhost:8080/WSAntenasCedis/API/CEDIS/registrar_camion/";
 const URLContenedores =
-  "http://localhost:8000/WSAntenasCedis/API/CEDIS/registro_equipos/";
+  "http://localhost:8081/WSAntenasCedis/API/CEDIS/registro_equipos/";
 
 process.on("uncaughtException", (ex) => {
   console.log("ERROR");
