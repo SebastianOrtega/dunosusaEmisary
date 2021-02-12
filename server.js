@@ -133,8 +133,8 @@ app.post("*", function (req, res) {
   console.log("================================================");
 
   arregloJSONsContenedores.map((dato) => {
-    console.log("isEmptyContenedores: ", isEmpty(dato));
-    console.log(dato);
+    //console.log("isEmptyContenedores: ", isEmpty(dato));
+    //console.log(dato);
     if (!isEmpty(dato)) {
       console.log("Post en Contenedores ", URLContenedores);
       axios
@@ -142,6 +142,8 @@ app.post("*", function (req, res) {
         .then((res) => {
           console.log("Resultado: ", res.status);
           console.log("------------------------------------------------");
+          console.log(JSON.stringify(dato));
+          console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
         })
         .catch((error) => {
           logger.error("Error de Envio: " + String(error));
@@ -152,8 +154,8 @@ app.post("*", function (req, res) {
   });
 
   arregloJSONsCamiones.map((dato) => {
-    console.log("isEmptyCamiones: ", isEmpty(dato));
-    console.log(dato);
+    // console.log("isEmptyCamiones: ", isEmpty(dato));
+    // console.log(dato);
     if (!isEmpty(dato)) {
       console.log("Post en Camiones ", URLCamiones);
       axios
@@ -161,6 +163,8 @@ app.post("*", function (req, res) {
         .then((res) => {
           console.log("Resultado: ", res.status);
           console.log("------------------------------------------------");
+          console.log(JSON.stringify(dato));
+          console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
         })
         .catch((error) => {
           logger.error("Error de Envio: " + String(error));
