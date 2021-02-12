@@ -6,8 +6,10 @@ const { transports, createLogger, format } = require("winston");
 const app = express();
 const PORT = process.env.PORT || 8080;
 const Equipos = require("./equipos.js");
-const URLCamiones = "http://localhost:8001";
-const URLContenedores = "http://localhost:8000";
+const URLCamiones =
+  "http://localhost:8000/WSAntenasCedis/API/CEDIS/registrar_camion/";
+const URLContenedores =
+  "http://localhost:8000/WSAntenasCedis/API/CEDIS/registro_equipos/";
 
 process.on("uncaughtException", (ex) => {
   console.log("ERROR");
